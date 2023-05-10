@@ -158,6 +158,19 @@ class occupancy_field_Dataset(torch.utils.data.Dataset):
             if random() < self.feature_drop_out:
                 text_feature = self.an_object_feature
             res["text_feature"] = text_feature
+            
+            if self.vit_global and not self.vit_local:
+                # ablation study 1 in the paper
+                sketch_view_index = np.random.randint(0, 5 * SKETCH_PER_VIEW)
+                try:
+                    image_feature = np.load(os.path.join(
+                        self.feature_folder, model_name, f"{sketch_view_index:02d}.npy"))
+                except Exception as e:
+                    image_feature = self.white_image_feature
+                    
+                if random() < self.feature_drop_out:
+                    image_feature = self.white_image_feature
+                res["text_feature"] = image_feature[0]
 
         occupancy_high = np.where(abs(sdf) < TSDF_VALUE, np.ones_like(
             sdf, dtype=np.float32), np.zeros_like(sdf, dtype=np.float32))
