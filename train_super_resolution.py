@@ -126,19 +126,16 @@ def train_from_folder(
                               logger=tb_logger,
                               max_epochs=training_epoch,
                               log_every_n_steps=1,
-                              track_grad_norm=2,
                               callbacks=[checkpoint_callback],
                               overfit_batches=0.01)
 
         else:
-
             trainer = Trainer(devices=-1,
                               accelerator="gpu",
                               strategy=DDPPlugin(
                                   find_unused_parameters=find_unused_parameters),
                               logger=tb_logger,
                               max_epochs=training_epoch,
-                              track_grad_norm=2,
                               log_every_n_steps=1,
                               callbacks=[checkpoint_callback])
           
