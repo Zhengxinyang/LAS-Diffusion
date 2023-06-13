@@ -76,7 +76,7 @@ class SDF_sparsity_Dataset(data.Dataset):
         elif data_class == "all":
             _data_classes = snc_category_to_synth_id_all.keys()
         else:
-            _data_classes == [data_class]
+            _data_classes = [data_class]
 
         self.sdf_paths = []
         if split_dataset:
