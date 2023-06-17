@@ -23,7 +23,7 @@ class EMA():
         return old * self.beta + (1 - self.beta) * new
 
 
-def ativiation_function():
+def activation_function():
     return nn.SiLU()
 
 
@@ -123,7 +123,7 @@ class CrossAttention(nn.Module):
         self.world_dims = world_dims
         self.q = nn.Sequential(
             normalization(feature_dim),
-            ativiation_function(),
+            activation_function(),
             conv_nd(world_dims, feature_dim, feature_dim, 3, padding=1),
         )
         self.patch_number = patch_number
@@ -279,24 +279,24 @@ class ResnetBlock(nn.Module):
         super().__init__()
         self.world_dims = world_dims
         self.time_mlp = nn.Sequential(
-            ativiation_function(),
+            activation_function(),
             nn.Linear(emb_dim, dim_out)
         )
         self.use_text_condition = use_text_condition
         if self.use_text_condition:
             self.text_mlp = nn.Sequential(
-                ativiation_function(),
+                activation_function(),
                 nn.Linear(emb_dim, dim_out),
             )
 
         self.block1 = nn.Sequential(
             normalization(dim_in),
-            ativiation_function(),
+            activation_function(),
             conv_nd(world_dims, dim_in, dim_out, 3, padding=1),
         )
         self.block2 = nn.Sequential(
             normalization(dim_out),
-            ativiation_function(),
+            activation_function(),
             nn.Dropout(dropout),
             zero_module(conv_nd(world_dims, dim_out, dim_out, 3, padding=1)),
         )

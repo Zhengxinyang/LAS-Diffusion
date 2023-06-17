@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from network.model_utils import LearnedSinusoidalPosEmb, ativiation_function
+from network.model_utils import LearnedSinusoidalPosEmb, activation_function
 import ocnn
 from ocnn.utils import scatter_add
 from ocnn.octree import Octree
@@ -75,7 +75,7 @@ class OctreeResBlock(torch.nn.Module):
         self.conv1x1c = ocnn.modules.Conv1x1(
             in_channels, out_channels) if self.in_channels != self.out_channels else our_Identity()
 
-        self.silu = ativiation_function()
+        self.silu = activation_function()
 
     def forward(self, data: torch.Tensor, octree: Octree, depth: int):
         # print(data.shape)
@@ -144,7 +144,7 @@ class ResnetBlock(nn.Module):
     def __init__(self, dim_in, dim_out, emb_dim, condition_input=False):
         super().__init__()
         self.time_mlp = nn.Sequential(
-            ativiation_function(),
+            activation_function(),
             nn.Linear(emb_dim, dim_out)
         )
         self.condition_input = condition_input
@@ -157,7 +157,7 @@ class ResnetBlock(nn.Module):
         self.block2 = zero_module(ocnn.nn.OctreeConv(
             dim_out, dim_out, kernel_size=[3], nempty=True, use_bias=True))
 
-        self.silu = ativiation_function()
+        self.silu = activation_function()
         self.res_conv = ocnn.modules.Conv1x1(
             dim_in, dim_out, use_bias=True) if dim_in != dim_out else our_Identity()
 
@@ -209,7 +209,7 @@ class Sparsity_UNetModel(nn.Module):
         self.time_pos_emb = LearnedSinusoidalPosEmb(base_channels)
         self.time_emb = nn.Sequential(
             nn.Linear(base_channels + 1, emb_dim),
-            ativiation_function(),
+            activation_function(),
             nn.Linear(emb_dim, emb_dim)
         )
 
@@ -245,7 +245,7 @@ class Sparsity_UNetModel(nn.Module):
             ]))
 
         self.end_norm = normalization(base_channels)
-        self.end = ativiation_function()
+        self.end = activation_function()
         self.out = ocnn.nn.OctreeConv(
             base_channels, 1, kernel_size=[3], nempty=True, use_bias=True)
 

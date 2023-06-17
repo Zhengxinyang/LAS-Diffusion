@@ -36,13 +36,13 @@ class UNetModel(nn.Module):
         self.time_pos_emb = LearnedSinusoidalPosEmb(base_channels)
         self.time_emb = nn.Sequential(
             nn.Linear(base_channels + 1, emb_dim),
-            ativiation_function(),
+            activation_function(),
             nn.Linear(emb_dim, emb_dim)
         )
         if self.use_text_condition:
             self.text_emb = nn.Sequential(
                 nn.Linear(text_condition_dim, emb_dim),
-                ativiation_function(),
+                activation_function(),
                 nn.Linear(emb_dim, emb_dim)
             )
 
@@ -65,7 +65,7 @@ class UNetModel(nn.Module):
                                drop_out=dropout) if use_cross and self.use_sketch_condition else our_Identity(),
                 nn.Sequential(
                     normalization(dim_out),
-                    ativiation_function(),
+                    activation_function(),
                     AttentionBlock(
                         dim_out, num_heads=num_heads)) if ds in attention_resolutions and with_attention else our_Identity(),
                 Downsample(
@@ -85,7 +85,7 @@ class UNetModel(nn.Module):
                                              drop_out=dropout) if self.use_sketch_condition else our_Identity()
         self.mid_self_attn = nn.Sequential(
             normalization(mid_dim),
-            ativiation_function(),
+            activation_function(),
             AttentionBlock(mid_dim, num_heads=num_heads)
         ) if ds in attention_resolutions and with_attention else our_Identity()
         self.mid_block2 = ResnetBlock(
@@ -104,7 +104,7 @@ class UNetModel(nn.Module):
                                drop_out=dropout) if use_cross and self.use_sketch_condition else our_Identity(),
                 nn.Sequential(
                     normalization(dim_in),
-                    ativiation_function(),
+                    activation_function(),
                     AttentionBlock(
                         dim_in, num_heads=num_heads)) if ds in attention_resolutions and with_attention else our_Identity(),
                 Upsample(
@@ -115,7 +115,7 @@ class UNetModel(nn.Module):
 
         self.end = nn.Sequential(
             normalization(base_channels),
-            ativiation_function()
+            activation_function()
         )
 
         self.out = conv_nd(world_dims, base_channels, 1, 3, padding=1)
