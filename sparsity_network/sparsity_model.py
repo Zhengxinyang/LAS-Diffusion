@@ -56,13 +56,8 @@ class SDFDiffusion(nn.Module):
 
         x_t = torch.cat(x_t, dim=0)
 
-        self_cond = None
-        if random() < 0.5:
-            with torch.no_grad():
-                self_cond = self.denoise_fn(x_t, noise_level, octree)
-                self_cond.detach_()
-
-        pred = self.denoise_fn(x_t, noise_level, octree, self_cond)
+        # don't need self condition
+        pred = self.denoise_fn(x_t, noise_level, octree, None)
         sdf_loss = (pred - x_start) ** 2
         loss = torch.zeros((batch_size,), device=self.device)
         for i in range(batch_size):
