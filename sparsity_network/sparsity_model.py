@@ -78,7 +78,7 @@ class SDFDiffusion(nn.Module):
 
         time_pairs = self.get_sampling_timesteps(
             1, device=self.device, steps=steps)
-        x_start = None
+
         if verbose: 
             loops =  tqdm(time_pairs, desc='sampling loop time step')
         else:
@@ -91,7 +91,7 @@ class SDFDiffusion(nn.Module):
             alpha_next, sigma_next = log_snr_to_alpha_sigma(log_snr_next)
 
             x_start = self.denoise_fn(
-                noise_feature, log_snr, octree, x_start)
+                noise_feature, log_snr, octree)
 
             x_start.clamp_(-1, 1)
             
@@ -113,7 +113,7 @@ class SDFDiffusion(nn.Module):
 
         time_pairs = self.get_sampling_timesteps(
             1, device=self.device, steps=steps)
-        x_start = None
+
         if verbose: 
             loops =  tqdm(time_pairs, desc='sampling loop time step')
         else:
@@ -126,7 +126,7 @@ class SDFDiffusion(nn.Module):
             alpha_next, sigma_next = log_snr_to_alpha_sigma(log_snr_next)
 
             x_start  = self.denoise_fn(
-                noise_feature, log_snr, octree, x_start)
+                noise_feature, log_snr, octree)
 
             x_start.clamp_(-1, 1)
             pred_noise = (noise_feature - alpha * x_start) / \
